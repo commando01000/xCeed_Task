@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
+using Common.Layer;
 using Data.Layer.Contexts;
 using Data.Layer.Entities;
 using Repository.Layer.Interfaces;
 using Repository.Layer.Specifications.Tasks;
 using Service.Layer.ViewModels.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Layer.Services.Tasks
 {
@@ -34,19 +30,95 @@ namespace Service.Layer.Services.Tasks
             return mappedTasks;
         }
 
-        public Task<TaskVM> AddTask(TaskVM task)
+        public async Task<TaskVM> GetTask(Guid id)
         {
-            throw new NotImplementedException();
+            var tasksSpecifications = new TasksSpecifications();
+            tasksSpecifications.Id = id.ToString();
+
+            var specs = new TasksWithSpecifications(tasksSpecifications);
+            var task = await _unitOfWork.Repository<TaskItem, Guid>().GetWithSpecs(specs);
+
+            var mappedTask = _mapper.Map<TaskVM>(task);
+            return mappedTask;
         }
 
-        public Task<bool> DeleteTask(string id)
+        public async Task<Response<Nothing>> AddTask(TaskVM task)
         {
-            throw new NotImplementedException();
+            var mappedTask = _mapper.Map<TaskItem>(task);
+            await _unitOfWork.Repository<TaskItem, Guid>().Create(mappedTask);
+            await _unitOfWork.CompleteAsync();
+
+            if (mappedTask.Id != Guid.Empty)
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Task added successfully"
+                };
+            }
+            else
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error while adding task"
+                };
+            }
         }
 
-        public Task<TaskVM> UpdateTask(TaskVM task)
+        public async Task<Response<Nothing>> UpdateTask(TaskVM task)
         {
-            throw new NotImplementedException();
+            var mappedTask = _mapper.Map<TaskItem>(task);
+            await _unitOfWork.Repository<TaskItem, Guid>().Update(mappedTask);
+            var result = await _unitOfWork.CompleteAsync();
+
+            if (result > 0)
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Task updated successfully"
+                };
+            }
+            else
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error while updating task"
+                };
+            }
         }
+
+        public async Task<Response<Nothing>> DeleteTask(Guid id)
+        {
+            var taskItem = await _unitOfWork.Repository<TaskItem, Guid>().Get(id);
+            var result = await _unitOfWork.Repository<TaskItem, Guid>().Delete(taskItem);
+            await _unitOfWork.CompleteAsync();
+
+            if (result)
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Task deleted successfully"
+                };
+            }
+            else
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error while deleting task"
+                };
+            }
+        }
+
     }
 }

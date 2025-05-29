@@ -1,4 +1,5 @@
-﻿using Repository.Layer.Specifications.Tasks;
+﻿using Common.Layer;
+using Repository.Layer.Specifications.Tasks;
 using Service.Layer.ViewModels.Tasks;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ namespace Service.Layer.Services.Tasks
     public interface ITaskService
     {
         public Task<List<TaskVM>> GetAllTasks(TasksSpecifications tasksSpecifications);
-        public Task<TaskVM> AddTask(TaskVM task);
-        public Task<TaskVM> UpdateTask(TaskVM task);
-        public Task<bool> DeleteTask(string id);
+        public Task<TaskVM> GetTask(Guid id);
+        public Task<Response<Nothing>> AddTask(TaskVM task);
+        public Task<Response<Nothing>> UpdateTask(TaskVM task);
+        public Task<Response<Nothing>> DeleteTask(Guid id);
     }
 }

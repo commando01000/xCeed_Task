@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.Layer.Entities.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Service.Layer.Services.Tasks;
 using Service.Layer.ViewModels.Tasks;
 
@@ -10,10 +14,12 @@ namespace xCeed_Task.Controllers
     public class TaskController : Controller
     {
         private readonly ITaskService _taskService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public TaskController(ITaskService taskService)
+        public TaskController(ITaskService taskService, UserManager<AppUser> userManager)
         {
             _taskService = taskService;
+            _userManager = userManager;
         }
 
         // GET: TaskController
@@ -52,23 +58,36 @@ namespace xCeed_Task.Controllers
 
         // GET: TaskController/Edit/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid Id)
         {
-            return View();
+            var task = await _taskService.GetTask(Id);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            var users = await _userManager.Users.ToListAsync();
+
+            ViewBag.Users = new SelectList(users, "Id", "DisplayName");
+
+            return View(task);
         }
 
         // POST: TaskController/Edit/5
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(TaskVM taskVM)
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> Edit(TaskVM taskVM)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var result = await _taskService.UpdateTask(taskVM);
+                return Json(result);
             }
             catch
             {
-                return View();
+                return Json(new { Status = false });
             }
         }
 

@@ -41,6 +41,8 @@ namespace xCeed_Task.Extensions
                 options.SlidingExpiration = true; // refresh expiration on activity
             });
 
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IAccountService, AccountService>();
 
             return services;

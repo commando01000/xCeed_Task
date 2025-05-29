@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/xCeed_Task.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/common.css" />
+    <link rel="stylesheet" href="~/css/snackbar.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
 </head>
 <body>
@@ -56,15 +58,24 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - xCeed_Task - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* <footer class="border-top footer text-muted"> *@
+    @*     <div class="container"> *@
+    @*         &copy; 2025 - xCeed_Task - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+    @*     </div> *@
+    @* </footer> *@
+
+    <!-- 1. jQuery first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- 2. DataTables plugin (which depends on jQuery) -->
+    <script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
+
+    <!-- 3. Bootstrap (can be after DataTables) -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/2.3.1/js/dataTables.dataTables.min.js"></script>
+
+    <!-- 4. Your custom site scripts -->
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/common.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

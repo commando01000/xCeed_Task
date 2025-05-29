@@ -1,0 +1,108 @@
+﻿#snackbar {
+    visibility: hidden;
+    min-width: 300px;
+    margin-left: -150px;
+    background-color: #1F2933;
+    color: #CED0D7;
+    text-align: right;
+    border-radius: 5px;
+    position: fixed;
+    z-index: 1001;
+    left: 50%;
+    bottom: 30px;
+    font-size: 16px;
+    overflow: hidden;
+    direction: rtl;
+}
+
+.notify-progress {
+    height: 4px;
+    display: block;
+    width: 100%;
+    bottom: 0;
+}
+
+.successClass, .SuccessClass {
+    background-color: #82F19C;
+    animation: decreaseBorderWidth 3s linear forwards;
+}
+
+.errorClass, .ErrorClass {
+    background-color: #F08282;
+    animation: decreaseBorderWidth 3s linear forwards;
+}
+
+.infoClass, .InfoClass {
+    background-color: #EFE081;
+    animation: decreaseBorderWidth 3s linear forwards;
+}
+
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 3s;
+    animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+
+.massage-icon {
+    margin-left: 8px;
+    width: 24px;
+    height: 24px;
+}
+
+@keyframes decreaseBorderWidth {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0;
+    }
+}
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}

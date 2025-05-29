@@ -1,6 +1,7 @@
 ﻿using Common.Layer;
 using Data.Layer.Contexts;
 using Data.Layer.Entities.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Layer.Interfaces;
@@ -18,6 +19,7 @@ namespace Service.Layer.Services.Account
         private readonly IUnitOfWork<AppDbContext> _unitOfWork;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AccountService(IUnitOfWork<AppDbContext> unitOfWork, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
         {
@@ -25,5 +27,39 @@ namespace Service.Layer.Services.Account
             _signInManager = signInManager;
             _userManager = userManager;
         }
+
+        public string? GetCurrentUserId()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        public async Task<AppUser?> GetCurrentUserAsync()
+        {
+            var userId = GetCurrentUserId();
+            return userId == null ? null : await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<string?> GetCurrentUserDisplayName()
+        {
+            var user = await GetCurrentUserAsync();
+            return user?.DisplayName;
+        }
+
+        public async Task<string?> GetCurrentUserEmail()
+        {
+            var user = await GetCurrentUserAsync();
+            return user?.Email;
+        }
+
+        public async Task<string?> GetCurrentUserRole()
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null) return null;
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.FirstOrDefault();
+        }
+
+
     }
 }
