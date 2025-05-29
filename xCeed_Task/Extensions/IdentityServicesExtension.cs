@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Service.Layer.Services.Account;
 using System.Text;
 
 namespace xCeed_Task.Extensions
@@ -31,13 +32,16 @@ namespace xCeed_Task.Extensions
             .AddCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
+                options.ExpireTimeSpan = TimeSpan.FromDays(15); // keep user logged in
+                options.SlidingExpiration = true; // refresh expiration on activity
             });
+
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }

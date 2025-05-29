@@ -1,8 +1,78 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Service.Layer.ViewModels.Tasks
+@model List<Service.Layer.ViewModels.Tasks.TaskVM>
+
+@{
+    ViewData["Title"] = "Tasks";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h2 class="mb-4">Tasks</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No tasks found.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    <th>Assigned User</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    <tr>
+                        <td>@task.TaskName</td>
+                        <td>@(task.Description.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td>
+                        <td>
+                            <span class="badge @GetPriorityClass(task.Priority)">
+                                @task.Priority
+                            </span>
+                        </td>
+                        <td>@task.DueDate.ToShortDateString()</td>
+                        <td>@(task.AssignedUserName != null ? @task.AssignedUserName : "Unassigned")</td>
+                        <td>
+                            <a asp-controller="Task" asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">Details</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+                                <form asp-controller="Task" asp-action="Delete" asp-route-id="@task.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                                </form>
+
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        console.log("Tasks loaded");
+    </script>
+}
+
+@functions {
+    // Helper method to get the CSS class for the priority badge
+    string GetPriorityClass(TaskPriority priority)
+    {
+        return priority switch
+        {
+            TaskPriority.High => "bg-danger text-white",
+            TaskPriority.Medium => "bg-warning text-dark",
+            TaskPriority.Low => "bg-success text-white",
+            _ => "bg-secondary text-white"
+        };
+    }
+}

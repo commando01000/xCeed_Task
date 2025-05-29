@@ -11,7 +11,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Repository.Layer\Repository.Layer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Base.Repository">
+      <HintPath>..\..\Base.Repository\Base.Repository\bin\Debug\net8.0\Base.Repository.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

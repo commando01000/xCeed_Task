@@ -1,5 +1,9 @@
 ﻿using Data.Layer.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Repository.Layer;
+using Repository.Layer.Interfaces;
+using Service.Layer.Profiles;
+using Service.Layer.Services.Tasks;
 using xCeed_Task.Middlewares;
 
 namespace xCeed_Task.Extensions
@@ -18,6 +22,16 @@ namespace xCeed_Task.Extensions
 
             // Register exception middleware
             services.AddTransient<ExceptionMiddleware>();
+
+            // Register UnitOfWork with AppDbContext
+            services.AddScoped(typeof(IUnitOfWork<AppDbContext>), typeof(UnitOfWork<AppDbContext>));
+
+            // Register services
+            services.AddScoped<ITaskService, TaskService>();
+
+            // Register AutoMappers
+            services.AddAutoMapper(typeof(UserProfile).Assembly);
+            services.AddAutoMapper(typeof(TaskProfile).Assembly);
 
             return services;
         }

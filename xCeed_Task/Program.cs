@@ -37,6 +37,7 @@ namespace xCeed_Task
 
                     // Seed the database
                     await UsersContextSeed.SeedUsersAsync(context, UserManager, roleManager, logger);
+                    await TasksContextSeed.SeedTasksAsync(context);
                 }
                 catch (Exception ex)
                 {
@@ -61,11 +62,17 @@ namespace xCeed_Task
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.MapControllerRoute(
+            //    name: "default",
+            //    pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
+
 
             app.Run();
         }
