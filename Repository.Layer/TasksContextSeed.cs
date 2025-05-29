@@ -18,56 +18,56 @@ namespace Repository.Layer
                 var user = context.Users.FirstOrDefault(u => u.Email == "user@demo.com");
 
                 var tasks = new List<TaskItem>
-            {
-                new TaskItem
                 {
-                    TaskName = "Review Reports",
-                    Description = "Review financial reports before Friday",
-                    Priority = TaskPriority.High,
-                    DueDate = DateTime.Today.AddDays(2),
-                    AssignedUserId = admin?.Id
-                },
-                new TaskItem
-                {
-                    TaskName = "Update Website",
-                    Description = "Change homepage banner and update footer links",
-                    Priority = TaskPriority.Medium,
-                    DueDate = DateTime.Today.AddDays(5),
-                    AssignedUserId = user?.Id
-                },
-                new TaskItem
-                {
-                    TaskName = "Test Login Flow",
-                    Description = "Verify login and registration flows with different roles",
-                    Priority = TaskPriority.Low,
-                    DueDate = DateTime.Today.AddDays(3),
-                    AssignedUserId = user?.Id
-                },
-                new TaskItem
-                {
-                    TaskName = "Design Brochure",
-                    Description = "Create new marketing brochure for summer campaign",
-                    Priority = TaskPriority.Medium,
-                    DueDate = DateTime.Today.AddDays(6),
-                    AssignedUserId = null // Unassigned
-                },
-                new TaskItem
-                {
-                    TaskName = "Database Backup",
-                    Description = "Schedule and test full backup routine",
-                    Priority = TaskPriority.High,
-                    DueDate = DateTime.Today.AddDays(1),
-                    AssignedUserId = admin?.Id
-                },
-                new TaskItem
-                {
-                    TaskName = "Social Media Calendar",
-                    Description = "Plan Instagram content calendar for next 2 weeks",
-                    Priority = TaskPriority.Low,
-                    DueDate = DateTime.Today.AddDays(7),
-                    AssignedUserId = null // Unassigned
-                }
-            };
+                    new TaskItem
+                    {
+                        TaskName = "Review Reports",
+                        Description = "Review financial reports before Friday",
+                        Priority = TaskPriority.High,
+                        DueDate = DateTime.Today.AddDays(2),
+                        AssignedUserId = admin?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Update Website",
+                        Description = "Change homepage banner and update footer links",
+                        Priority = TaskPriority.Medium,
+                        DueDate = DateTime.Today.AddDays(5),
+                        AssignedUserId = user?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Test Login Flow",
+                        Description = "Verify login and registration flows with different roles",
+                        Priority = TaskPriority.Low,
+                        DueDate = DateTime.Today.AddDays(3),
+                        AssignedUserId = user?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Design Brochure",
+                        Description = "Create new marketing brochure for summer campaign",
+                        Priority = TaskPriority.Medium,
+                        DueDate = DateTime.Today.AddDays(6),
+                        AssignedUserId = null // Unassigned
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Database Backup",
+                        Description = "Schedule and test full backup routine",
+                        Priority = TaskPriority.High,
+                        DueDate = DateTime.Today.AddDays(1),
+                        AssignedUserId = admin?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Social Media Calendar",
+                        Description = "Plan Instagram content calendar for next 2 weeks",
+                        Priority = TaskPriority.Low,
+                        DueDate = DateTime.Today.AddDays(7),
+                        AssignedUserId = null // Unassigned
+                    }
+                };
 
                 await context.Tasks.AddRangeAsync(tasks);
                 await context.SaveChangesAsync();
