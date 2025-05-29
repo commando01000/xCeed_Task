@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Layer.Entities
 {
-    public class Task
+    public class TaskItem
     {
         [Key]
         public int Id { get; set; }
@@ -31,10 +31,10 @@ namespace Data.Layer.Entities
         public DateTime DueDate { get; set; }
 
         [Required(ErrorMessage = "Assigned user is required.")]
-        public string AssignedUserId { get; set; }
+        public string? AssignedUserId { get; set; }
 
         [ForeignKey("AssignedUserId")]
-        public AppUser AssignedUser { get; set; }
+        public AppUser? AssignedUser { get; set; }
     }
 
     public enum TaskPriority
