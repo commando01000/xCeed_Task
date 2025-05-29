@@ -33,7 +33,7 @@ namespace Repository.Layer.Specifications.Tasks
 
 
         public string? Sort { get; set; }
-        public int pageSize { get; set; } = 6;
+        public int pageSize { get; set; } = 5;
         public int PageIndex { get; set; } = 1;
         private const int MaxPageSize = 50;
 

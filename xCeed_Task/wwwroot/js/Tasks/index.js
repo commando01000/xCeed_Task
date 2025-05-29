@@ -26,7 +26,7 @@ $(document).ready(function () {
     });
 
 
-    // Edit handler
+    // Edit handler using event delegation
     $('#tasksTable tbody').on('click', '.btn-edit', function () {
         const taskId = $(this).data('id');
         window.location.href = `/Task/Edit/${taskId}`;
@@ -49,4 +49,28 @@ $(document).ready(function () {
             Notify("Failed to delete task.", "Error");
         }
     });
+
+    var adminTable = document.getElementById('admin-tasks-table');
+
+    if (adminTable != null) {
+        // Handle pagination click
+        $(adminTable).on('click', '.page-link', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            if (!page) return;
+
+            $.ajax({
+                url: '/Home/GetPaginatedTasks',
+                type: 'POST',
+                data: { page: page },
+                success: function (response) {
+                    debugger;
+                    adminTable.innerHTML = response;
+                },
+                error: function () {
+                    Notify('Failed to load data.', 'Error');
+                }
+            });
+        });
+    }
 });

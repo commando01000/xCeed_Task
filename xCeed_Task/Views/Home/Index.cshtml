@@ -1,5 +1,5 @@
 ﻿@using Service.Layer.ViewModels.Tasks
-@model List<Service.Layer.ViewModels.Tasks.TaskVM>
+@model Service.Layer.ViewModels.Home.HomeVM
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,49 +12,52 @@
 
 <div class="container mt-4">
     <h2 class="mb-4">Tasks</h2>
-
-    @if (!Model.Any())
+    @if (!Model.TasksList.Any() && Model.PaginatedTasks == null)
     {
         <div class="alert alert-info">No tasks found.</div>
     }
     else
     {
-        <table id="tasksTable" class="table table-bordered table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th>Task Name</th>
-                    <th>Description</th>
-                    <th>Priority</th>
-                    <th>Due Date</th>
-                    <th>Assigned User</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var task in Model)
-                {
+        if (User.IsInRole("Admin"))
+        {
+            <div id="admin-tasks-table">
+                <partial name="~/Views/PartialViews/_AdminTasks.cshtml" model="Model.PaginatedTasks" />
+            </div>
+        }
+        else
+        {
+            <table id="tasksTable" class="table table-bordered table-hover">
+                <thead class="table-light">
                     <tr>
-                        <td>@task.TaskName</td>
-                        <td>@(task.Description.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td>
-                        <td>
-                            <span class="badge @GetPriorityClass(task.Priority)">
-                                @task.Priority
-                            </span>
-                        </td>
-                        <td>@task.DueDate.ToShortDateString()</td>
-                        <td>@(task.AssignedUserName != null ? @task.AssignedUserName : "Unassigned")</td>
-                        <td>
-                            <a asp-controller="Task" asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">Details</a>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <button class="btn btn-sm btn-outline-warning btn-edit" data-id="@task.Id">Edit</button>
-                                <button class="btn btn-sm btn-outline-danger btn-delete" data-id="@task.Id">Delete</button>
-                            }
-                        </td>
+                        <th>Task Name</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Due Date</th>
+                        <th>Assigned User</th>
+                        <th>Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model.TasksList)
+                    {
+                        <tr>
+                            <td>@task.TaskName</td>
+                            <td>@(task.Description.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td>
+                            <td>
+                                <span class="badge @GetPriorityClass(task.Priority)">
+                                    @task.Priority
+                                </span>
+                            </td>
+                            <td>@task.DueDate.ToShortDateString()</td>
+                            <td>@(task.AssignedUserName != null ? @task.AssignedUserName : "Unassigned")</td>
+                            <td>
+                                <a asp-controller="Task" asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     }
 </div>
 

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Layer.Specifications.Tasks
 {
-    public class TasksWithSpecifications : BaseSpecifications<TaskItem>
+    public class TasksWithCountSpecifications : BaseSpecifications<TaskItem>
     {
-        public TasksWithSpecifications(TasksSpecifications spec) : base(task =>
+        public TasksWithCountSpecifications(TasksSpecifications spec) : base(task =>
             (string.IsNullOrEmpty(spec.Id) || task.Id.ToString() == spec.Id) &&
             (string.IsNullOrEmpty(spec.AssignedUserId) || task.AssignedUserId == spec.AssignedUserId) &&
             (string.IsNullOrEmpty(spec.TaskName) || task.TaskName.ToLower().Contains(spec.TaskName.ToLower())) &&
@@ -18,15 +18,7 @@ namespace Repository.Layer.Specifications.Tasks
             (spec.Priority == 0 || task.Priority == spec.Priority)
         )
         {
-            // include related user
-            AddInclude(task => task.AssignedUser);
-            ApplyPaging(spec.PageSize * (spec.PageIndex - 1), spec.PageSize);
-        }
-
-        public TasksWithSpecifications(string Id) : base(task => task.Id.ToString() == Id)
-        {
-            // include related user
-            AddInclude(task => task.AssignedUser);
+            
         }
     }
 }

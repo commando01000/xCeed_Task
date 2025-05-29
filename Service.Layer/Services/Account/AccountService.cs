@@ -19,7 +19,6 @@ namespace Service.Layer.Services.Account
         private readonly IUnitOfWork<AppDbContext> _unitOfWork;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AccountService(IUnitOfWork<AppDbContext> unitOfWork, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
         {
@@ -30,7 +29,7 @@ namespace Service.Layer.Services.Account
 
         public string? GetCurrentUserId()
         {
-            return _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            return _userManager.GetUserId(_signInManager.Context.User);
         }
 
         public async Task<AppUser?> GetCurrentUserAsync()

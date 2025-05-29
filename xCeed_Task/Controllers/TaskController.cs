@@ -28,13 +28,6 @@ namespace xCeed_Task.Controllers
             return View();
         }
 
-        // GET: TaskController/Details/5
-        [HttpGet]
-        public ActionResult Details(Guid id)
-        {
-            return View();
-        }
-
         // GET: TaskController/Create
         public ActionResult Create()
         {
@@ -54,6 +47,14 @@ namespace xCeed_Task.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Details(Guid id)
+        {
+            var task = await _taskService.GetTask(id);
+
+            return View(task);
         }
 
         // GET: TaskController/Edit/5

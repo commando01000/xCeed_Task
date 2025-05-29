@@ -4,6 +4,7 @@ using Data.Layer.Contexts;
 using Data.Layer.Entities;
 using Repository.Layer.Interfaces;
 using Repository.Layer.Specifications.Tasks;
+using Service.Layer.ViewModels;
 using Service.Layer.ViewModels.Tasks;
 
 namespace Service.Layer.Services.Tasks
@@ -28,6 +29,32 @@ namespace Service.Layer.Services.Tasks
             var mappedTasks = _mapper.Map<List<TaskVM>>(tasks);
 
             return mappedTasks;
+        }
+
+        public async Task<PaginatedResultVM<TaskVM>> GetAllTasksPaginated(TasksSpecifications tasksSpecifications)
+        {
+            var specs = new TasksWithSpecifications(tasksSpecifications);
+
+            var tasks = await _unitOfWork.Repository<TaskItem, Guid>().GetAllWithSpecs(specs);
+
+            var countSpecs = new TasksWithCountSpecifications(tasksSpecifications);
+
+            var TasksCount = await _unitOfWork.Repository<TaskItem, Guid>().GetCountAsync(countSpecs);
+
+            var mappedTasks = _mapper.Map<List<TaskVM>>(tasks);
+
+            var Pages = TasksCount % tasksSpecifications.PageSize == 0 ? TasksCount / tasksSpecifications.PageSize : (TasksCount / tasksSpecifications.PageSize) + 1;
+
+            var totalPages = Pages;
+
+            var paginatedResult = new PaginatedResultVM<TaskVM>(
+                totalPages,
+                tasksSpecifications.PageIndex,
+                tasksSpecifications.PageSize,
+                mappedTasks
+            );
+
+            return paginatedResult;
         }
 
         public async Task<TaskVM> GetTask(Guid id)
