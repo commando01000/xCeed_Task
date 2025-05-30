@@ -7,6 +7,8 @@ using Repository.Layer.Specifications.Tasks;
 using Service.Layer.Services.Account;
 using Service.Layer.Services.Tasks;
 using Service.Layer.ViewModels.Home;
+using Service.Layer.ViewModels.Tasks;
+using xCeed_Task.CustomFilters;
 using xCeed_Task.Models;
 
 namespace xCeed_Task.Controllers
@@ -25,12 +27,9 @@ namespace xCeed_Task.Controllers
             _accountService = accountService;
         }
 
+        [NoCache]
         public async Task<IActionResult> Index()
         {
-            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-            Response.Headers["Pragma"] = "no-cache";
-            Response.Headers["Expires"] = "0";
-
             var userId = _accountService.GetCurrentUserId();
             var role = await _accountService.GetCurrentUserRole();
 
@@ -39,14 +38,14 @@ namespace xCeed_Task.Controllers
             if (role == "Admin")
             {
                 var specs = new TasksSpecifications();
-                var tasks = await _taskService.GetAllTasksPaginated(specs);
+                var tasks = await _taskService.GetAllTasksPaginated(specs); // for server side pagination
                 HomeVM.PaginatedTasks = tasks;
             }
             else
             {
                 var specs = new TasksSpecifications();
                 specs.AssignedUserId = userId;
-                var tasks = await _taskService.GetAllTasks(specs);
+                var tasks = await _taskService.GetAllTasks(specs); // for client side pagination
                 HomeVM.TasksList = tasks;
             }
             return View(HomeVM);
@@ -54,11 +53,17 @@ namespace xCeed_Task.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> GetPaginatedTasks(int page = 1, int pageSize = 5)
+        public async Task<ActionResult> GetPaginatedTasks(int page = 1, int pageSize = 5, string priority = null)
         {
             var specs = new TasksSpecifications();
             specs.PageIndex = page;
             specs.PageSize = pageSize;
+
+            if (!string.IsNullOrEmpty(priority))
+            {
+                specs.Priority = (Data.Layer.Entities.TaskPriority)Enum.Parse(typeof(TaskPriority), priority);
+            }
+
             var tasks = await _taskService.GetAllTasksPaginated(specs);
             return PartialView("~/Views/PartialViews/_AdminTasks.cshtml", tasks);
         }

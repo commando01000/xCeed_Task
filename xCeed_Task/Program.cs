@@ -5,6 +5,7 @@ using xCeed_Task.Middlewares;
 using xCeed_Task.Extensions;
 using Data.Layer.Entities.Identity;
 using Repository.Layer;
+using xCeed_Task.CustomFilters;
 namespace xCeed_Task
 {
     public class Program
@@ -14,7 +15,10 @@ namespace xCeed_Task
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<NoCacheAttribute>(); // register the custom filter
+            });
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddApplicationServices(builder.Configuration);
@@ -72,7 +76,6 @@ namespace xCeed_Task
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
-
 
             app.Run();
         }

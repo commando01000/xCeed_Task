@@ -20,12 +20,31 @@
     {
         if (User.IsInRole("Admin"))
         {
+            <div class="mb-3">
+                <label for="priorityFilter" class="form-label">Filter by Priority:</label>
+                <select id="priorityFilter" class="form-select w-auto d-inline-block">
+                    <option value="">All</option>
+                    @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
+                    {
+                        <option value="@priority">@priority</option>
+                    }
+                </select>
+            </div>
             <div id="admin-tasks-table">
                 <partial name="~/Views/PartialViews/_AdminTasks.cshtml" model="Model.PaginatedTasks" />
             </div>
         }
         else
         {
+            <div class="mb-3">
+                <label for="priorityFilter" class="form-label">Filter by Priority:</label>
+                <select id="priorityFilter" class="form-select w-auto d-inline-block">
+                    <option value="">All</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
             <table id="tasksTable" class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
