@@ -38,6 +38,7 @@ namespace xCeed_Task.Controllers
             if (role == "Admin")
             {
                 var specs = new TasksSpecifications();
+                specs.isPagingEnabled = true; // enable server side pagination
                 var tasks = await _taskService.GetAllTasksPaginated(specs); // for server side pagination
                 HomeVM.PaginatedTasks = tasks;
             }
@@ -45,6 +46,7 @@ namespace xCeed_Task.Controllers
             {
                 var specs = new TasksSpecifications();
                 specs.AssignedUserId = userId;
+                specs.isPagingEnabled = false; // disable server side pagination
                 var tasks = await _taskService.GetAllTasks(specs); // for client side pagination
                 HomeVM.TasksList = tasks;
             }
@@ -58,6 +60,7 @@ namespace xCeed_Task.Controllers
             var specs = new TasksSpecifications();
             specs.PageIndex = page;
             specs.PageSize = pageSize;
+            specs.isPagingEnabled = true; // enable server side pagination
 
             if (!string.IsNullOrEmpty(priority))
             {

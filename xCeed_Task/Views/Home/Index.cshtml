@@ -12,6 +12,13 @@
 
 <div class="container mt-4">
     <h2 class="mb-4">Tasks</h2>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-controller="Task" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Create Task
+        </a>
+    </div>
+
     @if (!Model.TasksList.Any() && Model.PaginatedTasks == null)
     {
         <div class="alert alert-info">No tasks found.</div>
@@ -40,9 +47,10 @@
                 <label for="priorityFilter" class="form-label">Filter by Priority:</label>
                 <select id="priorityFilter" class="form-select w-auto d-inline-block">
                     <option value="">All</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
+                    @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
+                    {
+                        <option value="@priority">@priority</option>
+                    }
                 </select>
             </div>
             <table id="tasksTable" class="table table-bordered table-hover">

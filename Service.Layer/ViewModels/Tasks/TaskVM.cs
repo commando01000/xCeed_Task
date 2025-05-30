@@ -4,7 +4,7 @@ namespace Service.Layer.ViewModels.Tasks
 {
     public class TaskVM
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required(ErrorMessage = "Task name is required.")]
         [StringLength(100, ErrorMessage = "Task name must be less than 100 characters.")]
@@ -28,6 +28,7 @@ namespace Service.Layer.ViewModels.Tasks
 
     public enum TaskPriority
     {
+        None = 0,
         Low = 1,
         Medium = 2,
         High = 3

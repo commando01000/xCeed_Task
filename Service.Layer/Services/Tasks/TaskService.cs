@@ -71,9 +71,19 @@ namespace Service.Layer.Services.Tasks
 
         public async Task<Response<Nothing>> AddTask(TaskVM task)
         {
+            // validate duedate of the task
+            if (task.DueDate < DateTime.Now)
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 400,
+                    Status = false,
+                    Message = "Due date cannot be in the past"
+                };
+            }
             var mappedTask = _mapper.Map<TaskItem>(task);
-            await _unitOfWork.Repository<TaskItem, Guid>().Create(mappedTask);
-            await _unitOfWork.CompleteAsync();
+            var result = await _unitOfWork.Repository<TaskItem, Guid>().Create(mappedTask);
+            var isCreated = await _unitOfWork.CompleteAsync();
 
             if (mappedTask.Id != Guid.Empty)
             {
@@ -81,7 +91,8 @@ namespace Service.Layer.Services.Tasks
                 {
                     StatusCode = 200,
                     Status = true,
-                    Message = "Task added successfully"
+                    Message = "Task added successfully",
+                    RedirectURL = "/Home/Index"
                 };
             }
             else
@@ -124,26 +135,40 @@ namespace Service.Layer.Services.Tasks
         public async Task<Response<Nothing>> DeleteTask(Guid id)
         {
             var taskItem = await _unitOfWork.Repository<TaskItem, Guid>().Get(id);
-            var result = await _unitOfWork.Repository<TaskItem, Guid>().Delete(taskItem);
-            await _unitOfWork.CompleteAsync();
 
-            if (result)
+            if (taskItem == null)
             {
                 return new Response<Nothing>()
                 {
-                    StatusCode = 200,
-                    Status = true,
-                    Message = "Task deleted successfully"
+                    StatusCode = 404,
+                    Status = false,
+                    Message = "Task not found"
                 };
             }
             else
             {
-                return new Response<Nothing>()
+                var result = await _unitOfWork.Repository<TaskItem, Guid>().Delete(taskItem);
+
+                await _unitOfWork.CompleteAsync();
+
+                if (result)
                 {
-                    StatusCode = 500,
-                    Status = false,
-                    Message = "Error while deleting task"
-                };
+                    return new Response<Nothing>()
+                    {
+                        StatusCode = 200,
+                        Status = true,
+                        Message = "Task deleted successfully"
+                    };
+                }
+                else
+                {
+                    return new Response<Nothing>()
+                    {
+                        StatusCode = 500,
+                        Status = false,
+                        Message = "Error while deleting task"
+                    };
+                }
             }
         }
 

@@ -48,8 +48,6 @@ $(document).ready(function () {
         });
     }
 
-
-
     function InitializeTasksDatatable() {
         const dt = $('#tasksTable').DataTable({
             scrollX: true,
@@ -183,13 +181,4 @@ $(document).ready(function () {
         });
     }
     // Admin Table
-
-
-    // Custom Filtering
-    function filterTasksTable(tasksTable) {
-        $('#priorityFilter').on('change', function () {
-            const selectedPriority = $(this).val();
-            tasksTable.column(2).search(selectedPriority).draw();
-        });
-    }
 });

@@ -25,7 +25,7 @@ namespace Repository.Layer.Specifications.Tasks
 
         [Required(ErrorMessage = "Due date is required.")]
         [DataType(DataType.Date)]
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
 
         public string? AssignedUserId { get; set; }
 
@@ -36,7 +36,7 @@ namespace Repository.Layer.Specifications.Tasks
         public int pageSize { get; set; } = 5;
         public int PageIndex { get; set; } = 1;
         private const int MaxPageSize = 50;
-
+        public bool isPagingEnabled { set; get; } = false;
         private string? _search;
         public int PageSize
         {
