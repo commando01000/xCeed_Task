@@ -24,7 +24,7 @@ namespace Data.Layer.Entities
 
         [Required(ErrorMessage = "Priority is required.")]
         [EnumDataType(typeof(TaskPriority))]
-        public TaskPriority Priority { get; set; }
+        public TaskPriority Priority { get; set; } = TaskPriority.None;
 
         [Required(ErrorMessage = "Due date is required.")]
         [DataType(DataType.Date)]
@@ -38,6 +38,7 @@ namespace Data.Layer.Entities
 
     public enum TaskPriority
     {
+        None = 0,
         Low = 1,
         Medium = 2,
         High = 3
