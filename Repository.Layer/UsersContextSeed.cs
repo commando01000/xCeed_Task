@@ -1,4 +1,5 @@
 ﻿using Data.Layer.Contexts;
+using Data.Layer.Entities;
 using Data.Layer.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -66,7 +67,14 @@ namespace Repository.Layer
                             Gender = "Female",
                             DateOfBirth = new DateOnly(1995, 5, 15),
                             Age = Extenstions.CalculateAge(new DateOnly(1995, 5, 15)),
-                            LastActive = DateTime.UtcNow
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "123 Maple Street",
+                                City = "Cairo",
+                                State = "Cairo Governorate",
+                                Country = "Egypt"
+                            }
                         },
                         new AppUser
                         {
@@ -76,7 +84,14 @@ namespace Repository.Layer
                             Gender = "Male",
                             DateOfBirth = new DateOnly(1990, 3, 10),
                             Age = Extenstions.CalculateAge(new DateOnly(1990, 3, 10)),
-                            LastActive = DateTime.UtcNow
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "456 Elm Avenue",
+                                City = "Dubai",
+                                State = "Dubai",
+                                Country = "UAE"
+                            }
                         },
                         new AppUser
                         {
@@ -86,7 +101,14 @@ namespace Repository.Layer
                             Gender = "Female",
                             DateOfBirth = new DateOnly(1998, 7, 22),
                             Age = Extenstions.CalculateAge(new DateOnly(1998, 7, 22)),
-                            LastActive = DateTime.UtcNow
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "789 Oak Blvd",
+                                City = "Amman",
+                                State = "Amman",
+                                Country = "Jordan"
+                            }
                         },
                         new AppUser
                         {
@@ -96,9 +118,51 @@ namespace Repository.Layer
                             Gender = "Male",
                             DateOfBirth = new DateOnly(1987, 11, 5),
                             Age = Extenstions.CalculateAge(new DateOnly(1987, 11, 5)),
-                            LastActive = DateTime.UtcNow
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "159 Pine Drive",
+                                City = "Riyadh",
+                                State = "Riyadh",
+                                Country = "Saudi Arabia"
+                            }
+                        },
+                        new AppUser
+                        {
+                            UserName = "linda.jones@demo.com",
+                            Email = "linda.jones@demo.com",
+                            DisplayName = "Linda Jones",
+                            Gender = "Female",
+                            DateOfBirth = new DateOnly(1992, 9, 30),
+                            Age = Extenstions.CalculateAge(new DateOnly(1992, 9, 30)),
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "62 Palm Court",
+                                City = "Beirut",
+                                State = "Beirut",
+                                Country = "Lebanon"
+                            }
+                        },
+                        new AppUser
+                        {
+                            UserName = "ali.khan@demo.com",
+                            Email = "ali.khan@demo.com",
+                            DisplayName = "Ali Khan",
+                            Gender = "Male",
+                            DateOfBirth = new DateOnly(1985, 1, 12),
+                            Age = Extenstions.CalculateAge(new DateOnly(1985, 1, 12)),
+                            LastActive = DateTime.UtcNow,
+                            Address = new Address
+                            {
+                                Street = "88 Crescent Street",
+                                City = "Karachi",
+                                State = "Sindh",
+                                Country = "Pakistan"
+                            }
                         }
                     };
+
 
                     foreach (var user in usersToSeed)
                     {

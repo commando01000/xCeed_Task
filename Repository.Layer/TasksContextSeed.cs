@@ -16,6 +16,9 @@ namespace Repository.Layer
             {
                 var admin = context.Users.FirstOrDefault(u => u.Email == "admin@demo.com");
                 var user = context.Users.FirstOrDefault(u => u.Email == "user@demo.com");
+                var john = context.Users.FirstOrDefault(u => u.Email == "john.doe@demo.com");
+                var sarah = context.Users.FirstOrDefault(u => u.Email == "sarah.smith@demo.com");
+                var mark = context.Users.FirstOrDefault(u => u.Email == "mark.taylor@demo.com");
 
                 var tasks = new List<TaskItem>
                 {
@@ -49,7 +52,7 @@ namespace Repository.Layer
                         Description = "Create new marketing brochure for summer campaign",
                         Priority = TaskPriority.Medium,
                         DueDate = DateTime.Today.AddDays(6),
-                        AssignedUserId = null // Unassigned
+                        AssignedUserId = sarah?.Id
                     },
                     new TaskItem
                     {
@@ -65,7 +68,39 @@ namespace Repository.Layer
                         Description = "Plan Instagram content calendar for next 2 weeks",
                         Priority = TaskPriority.Low,
                         DueDate = DateTime.Today.AddDays(7),
+                        AssignedUserId = john?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Prepare Training Material",
+                        Description = "Create onboarding presentation and checklists",
+                        Priority = TaskPriority.Medium,
+                        DueDate = DateTime.Today.AddDays(10),
+                        AssignedUserId = mark?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Team Feedback Survey",
+                        Description = "Draft questions and launch internal survey",
+                        Priority = TaskPriority.Low,
+                        DueDate = DateTime.Today.AddDays(4),
                         AssignedUserId = null // Unassigned
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Fix Payment Bug",
+                        Description = "Investigate and fix double-charge issue",
+                        Priority = TaskPriority.High,
+                        DueDate = DateTime.Today.AddDays(1),
+                        AssignedUserId = john?.Id
+                    },
+                    new TaskItem
+                    {
+                        TaskName = "Office Inventory Check",
+                        Description = "Audit hardware and supply levels",
+                        Priority = TaskPriority.Medium,
+                        DueDate = DateTime.Today.AddDays(8),
+                        AssignedUserId = null
                     }
                 };
 
