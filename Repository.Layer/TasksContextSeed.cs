@@ -12,15 +12,17 @@ namespace Repository.Layer
     {
         public static async Task SeedTasksAsync(AppDbContext context)
         {
-            if (!context.Tasks.Any())
+            if (await context.Database.CanConnectAsync())
             {
-                var admin = context.Users.FirstOrDefault(u => u.Email == "admin@demo.com");
-                var user = context.Users.FirstOrDefault(u => u.Email == "user@demo.com");
-                var john = context.Users.FirstOrDefault(u => u.Email == "john.doe@demo.com");
-                var sarah = context.Users.FirstOrDefault(u => u.Email == "sarah.smith@demo.com");
-                var mark = context.Users.FirstOrDefault(u => u.Email == "mark.taylor@demo.com");
+                if (!context.Tasks.Any())
+                {
+                    var admin = context.Users.FirstOrDefault(u => u.Email == "admin@demo.com");
+                    var user = context.Users.FirstOrDefault(u => u.Email == "user@demo.com");
+                    var john = context.Users.FirstOrDefault(u => u.Email == "john.doe@demo.com");
+                    var sarah = context.Users.FirstOrDefault(u => u.Email == "sarah.smith@demo.com");
+                    var mark = context.Users.FirstOrDefault(u => u.Email == "mark.taylor@demo.com");
 
-                var tasks = new List<TaskItem>
+                    var tasks = new List<TaskItem>
                 {
                     new TaskItem
                     {
@@ -104,8 +106,9 @@ namespace Repository.Layer
                     }
                 };
 
-                await context.Tasks.AddRangeAsync(tasks);
-                await context.SaveChangesAsync();
+                    await context.Tasks.AddRangeAsync(tasks);
+                    await context.SaveChangesAsync();
+                }
             }
         }
     }
