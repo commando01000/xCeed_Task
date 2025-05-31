@@ -20,8 +20,8 @@ namespace Repository.Layer.Specifications.Tasks
         [StringLength(500, ErrorMessage = "Description must be less than 500 characters.")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Priority is required.")]
-        public TaskPriority Priority { get; set; }
+        public TaskPriority? Priority { get; set; } = TaskPriority.None;
+        public bool FilterByPriority { get; set; } = false;
 
         [Required(ErrorMessage = "Due date is required.")]
         [DataType(DataType.Date)]

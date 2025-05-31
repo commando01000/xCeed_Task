@@ -23,7 +23,7 @@ $(document).ready(function () {
                         errorList += '</ul>';
                         $('div[asp-validation-summary="ModelOnly"]').html(errorList);
                     } else {
-                        Notify("Failed to create task.", "Error");
+                        Notify(response.message, "Error");
                     }
                 } else {
                     Notify("Task created successfully", "Success");

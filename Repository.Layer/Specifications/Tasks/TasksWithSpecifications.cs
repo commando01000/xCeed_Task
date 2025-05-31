@@ -15,7 +15,7 @@ namespace Repository.Layer.Specifications.Tasks
             (string.IsNullOrEmpty(spec.AssignedUserId) || task.AssignedUserId == spec.AssignedUserId) &&
             (string.IsNullOrEmpty(spec.TaskName) || task.TaskName.ToLower().Contains(spec.TaskName.ToLower())) &&
             (string.IsNullOrEmpty(spec.Description) || task.Description.ToLower().Contains(spec.Description.ToLower())) &&
-            (spec.Priority == 0 || task.Priority == spec.Priority) &&
+            (!spec.FilterByPriority || task.Priority == spec.Priority) &&
             (!spec.DueDate.HasValue || task.DueDate.Date >= spec.DueDate.Value.Date)
         )
         {

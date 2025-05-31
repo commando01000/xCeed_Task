@@ -71,8 +71,8 @@ namespace Service.Layer.Services.Tasks
 
         public async Task<Response<Nothing>> AddTask(TaskVM task)
         {
-            // validate duedate of the task
-            if (task.DueDate < DateTime.Now)
+            // validate duedate of the task to not be in the past
+            if (task.DueDate < DateTime.Today)
             {
                 return new Response<Nothing>()
                 {
@@ -81,6 +81,17 @@ namespace Service.Layer.Services.Tasks
                     Message = "Due date cannot be in the past"
                 };
             }
+
+            if (task.AssignedUserId == null)
+            {
+                return new Response<Nothing>()
+                {
+                    StatusCode = 400,
+                    Status = false,
+                    Message = "Assigned user is required"
+                };
+            }
+
             var mappedTask = _mapper.Map<TaskItem>(task);
             var result = await _unitOfWork.Repository<TaskItem, Guid>().Create(mappedTask);
             var isCreated = await _unitOfWork.CompleteAsync();

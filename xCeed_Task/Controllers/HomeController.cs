@@ -65,6 +65,7 @@ namespace xCeed_Task.Controllers
             if (!string.IsNullOrEmpty(priority))
             {
                 specs.Priority = (Data.Layer.Entities.TaskPriority)Enum.Parse(typeof(TaskPriority), priority);
+                specs.FilterByPriority = true;
             }
 
             var tasks = await _taskService.GetAllTasksPaginated(specs);
