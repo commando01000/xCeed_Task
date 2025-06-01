@@ -29,7 +29,7 @@ The repository aims to provide a modular, maintainable, and testable codebase fo
 2. Open the solution in Visual Studio or your preferred IDE.
 3. Restore NuGet packages.
 4. Build the project.
-
+5. Note for the (authentication & authorization) seeding you would find the users in the UserContextSeed class
 ## Usage
 
 - Refer to the codebase for examples on how to implement repositories, unit of work, and specifications in your own .NET projects.
