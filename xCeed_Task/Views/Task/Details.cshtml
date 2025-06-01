@@ -44,6 +44,9 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { Id = Model.Id }) |
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { Id = Model.Id }) <span>|</span>
+    }
     <a asp-action="Index" asp-controller="Home">Back to List</a>
 </div>
