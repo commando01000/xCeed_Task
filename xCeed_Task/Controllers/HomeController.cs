@@ -55,7 +55,7 @@ namespace xCeed_Task.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> GetPaginatedTasks(int page = 1, int pageSize = 5, string priority = null)
+        public async Task<ActionResult> GetPaginatedTasks(int page = 1, int pageSize = 5, string priority = null, string search = null)
         {
             var specs = new TasksSpecifications();
             specs.PageIndex = page;
@@ -66,6 +66,11 @@ namespace xCeed_Task.Controllers
             {
                 specs.Priority = (Data.Layer.Entities.TaskPriority)Enum.Parse(typeof(TaskPriority), priority);
                 specs.FilterByPriority = true;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                specs.Search = search;
             }
 
             var tasks = await _taskService.GetAllTasksPaginated(specs);

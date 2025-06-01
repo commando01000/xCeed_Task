@@ -84,7 +84,7 @@ $(document).ready(function () {
             responsive: false,
             paging: false,
             ordering: true,
-            searching: true,
+            searching: false,
             info: true,
             lengthChange: false,
             destroy: true,
@@ -180,5 +180,31 @@ $(document).ready(function () {
             }
         });
     }
+
+    $('#adminSearchBox').on('keypress', function (e) {
+        if (e.which === 13) { // Enter key
+            const search = $(this).val();
+            const selectedPriority = $('#priorityFilter').val();
+
+            $.ajax({
+                url: '/Home/GetPaginatedTasks',
+                type: 'POST',
+                data: {
+                    page: 1,
+                    priority: selectedPriority,
+                    search: search
+                },
+                success: function (response) {
+                    $('#admin-tasks-table').html(response);
+                    const dt = InitializeAdminTasksDatatable(); // rebind
+                    bindPriorityFilter(dt);
+                },
+                error: function () {
+                    Notify('Failed to search tasks.', 'Error');
+                }
+            });
+        }
+    });
+
     // Admin Table
 });

@@ -37,6 +37,13 @@
                     }
                 </select>
             </div>
+           
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-group mb-0">
+                    <input type="text" id="adminSearchBox" class="form-control" placeholder="🔍 Assignee Name..." />
+                </div>
+            </div>
+
             <div id="admin-tasks-table">
                 <partial name="~/Views/PartialViews/_AdminTasks.cshtml" model="Model.PaginatedTasks" />
             </div>

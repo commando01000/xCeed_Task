@@ -15,7 +15,7 @@ namespace Service.Layer.ViewModels.Tasks
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Priority is required.")]
-        public TaskPriority Priority { get; set; }
+        public TaskPriority Priority { get; set; } = TaskPriority.None;
 
         [Required(ErrorMessage = "Due date is required.")]
         [DataType(DataType.Date)]

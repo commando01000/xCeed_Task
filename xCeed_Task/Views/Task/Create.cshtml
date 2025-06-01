@@ -27,7 +27,7 @@
             <div class="form-group mt-3">
                 <label asp-for="Priority" class="control-label">Priority</label>
                 <select id="priority" asp-for="Priority" class="form-select w-auto d-inline-block">
-                    <option value="">-- Select Priority --</option>
+                    <option disabled >-- Select Priority --</option>
                     @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
                     {
                         <option value="@priority">@priority</option>
