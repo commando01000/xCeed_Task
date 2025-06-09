@@ -11,6 +11,7 @@ namespace Service.Layer.ViewModels
         public int TotalCount { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
+        public int PagesCount { get; }
         public bool HasPreviousPage { get => PageIndex > 1; }
         public bool HasNextPage { get => PageIndex < TotalCount; }
 
@@ -19,6 +20,7 @@ namespace Service.Layer.ViewModels
         {
             TotalCount = totalCount;
             PageIndex = pageIndex;
+            PagesCount = (int)Math.Ceiling(totalCount / (double)pageSize);
             PageSize = pageSize;
             Items = items;
         }

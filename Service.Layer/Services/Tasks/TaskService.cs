@@ -33,28 +33,24 @@ namespace Service.Layer.Services.Tasks
 
         public async Task<PaginatedResultVM<TaskVM>> GetAllTasksPaginated(TasksSpecifications tasksSpecifications)
         {
+            // Get filtered data using specs
             var specs = new TasksWithSpecifications(tasksSpecifications);
-
             var tasks = await _unitOfWork.Repository<TaskItem, Guid>().GetAllWithSpecs(specs);
 
+            // Get total count using count specs
             var countSpecs = new TasksWithCountSpecifications(tasksSpecifications);
+            var totalCount = await _unitOfWork.Repository<TaskItem, Guid>().GetCountAsync(countSpecs);
 
-            var TasksCount = await _unitOfWork.Repository<TaskItem, Guid>().GetCountAsync(countSpecs);
-
+            // Map to view models
             var mappedTasks = _mapper.Map<List<TaskVM>>(tasks);
 
-            var Pages = TasksCount % tasksSpecifications.PageSize == 0 ? TasksCount / tasksSpecifications.PageSize : (TasksCount / tasksSpecifications.PageSize) + 1;
-
-            var totalPages = Pages;
-
-            var paginatedResult = new PaginatedResultVM<TaskVM>(
-                totalPages,
+            // Return paginated result
+            return new PaginatedResultVM<TaskVM>(
+                totalCount,
                 tasksSpecifications.PageIndex,
                 tasksSpecifications.PageSize,
                 mappedTasks
             );
-
-            return paginatedResult;
         }
 
         public async Task<TaskVM> GetTask(Guid id)
