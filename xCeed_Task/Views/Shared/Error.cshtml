@@ -1,10 +1,11 @@
-﻿@model ErrorViewModel
+﻿@model xCeed_Task.Models.ErrorViewModel
 
 @{
     ViewData["Title"] = "Error";
+    var accId = "err-acc"; // unique base id for accordion elements
 }
 
-<div class="container mt-4">
+<div class="container mt-4" dir="ltr" style="text-align:left;">
     <div class="alert alert-danger" role="alert">
         <h1 class="display-4 text-danger">Oops! Something went wrong.</h1>
         <p class="lead">An error occurred while processing your request.</p>
@@ -13,7 +14,46 @@
         {
             <hr />
             <h5>Details (Development only):</h5>
-            <pre class="bg-light p-2 border rounded">@Model.ErrorMessage</pre>
+
+            <div class="accordion" id="@accId">
+                <!-- Summary panel -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="@($"{accId}-h1")">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="@($"#{accId}-c1")" aria-expanded="true" aria-controls="@($"{accId}-c1")">
+                            Error summary
+                        </button>
+                    </h2>
+                    <div id="@($"{accId}-c1")" class="accordion-collapse collapse show" aria-labelledby="@($"{accId}-h1")" data-bs-parent="#@accId">
+                        <div class="accordion-body">
+                            <div class="bg-light p-2 border rounded">
+                                <div><strong>Error:</strong> @Model.ExceptionType</div>
+                                <div><strong>Message:</strong> @Model.ErrorMessage</div>
+                                <div><strong>Source:</strong> @Model.Source</div>
+                                <div><strong>TargetSite:</strong> @Model.TargetSite</div>
+                                <div><strong>Path:</strong> @Model.Path@Model.QueryString</div>
+                                <div><strong>Endpoint:</strong> @Model.Endpoint</div>
+                                <div><strong>Route Values:</strong> @(Model.RouteValues != null ? string.Join(", ", Model.RouteValues.Select(r => $"{r.Key}={r.Value}")) : "N/A")</div>
+                                <div><strong>User:</strong> @Model.User</div>
+                                <div><strong>Timestamp (UTC):</strong> @Model.Utc</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stack trace panel -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="@($"{accId}-h2")">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#{accId}-c2")" aria-expanded="false" aria-controls="@($"{accId}-c2")">
+                            Stack trace
+                        </button>
+                    </h2>
+                    <div id="@($"{accId}-c2")" class="accordion-collapse collapse" aria-labelledby="@($"{accId}-h2")" data-bs-parent="#@accId">
+                        <div class="accordion-body">
+                            <pre class="bg-light p-2 border rounded mb-0" style="white-space:pre-wrap">@Model.StackTrace</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
 
         @if (Model.ShowRequestId)

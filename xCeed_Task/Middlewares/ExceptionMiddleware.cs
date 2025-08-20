@@ -1,8 +1,15 @@
-﻿using Common.Layer;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+using System.Diagnostics;
 using System.Text.Json;
+using xCeed_Task.Models;
 
-namespace xCeed_Task.Middlewares
+namespace Unified_Portal_Staged_Management.Middlewares
 {
     public class ExceptionMiddleware : IMiddleware
     {
@@ -23,44 +30,93 @@ namespace xCeed_Task.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
+                var requestId = Activity.Current?.Id ?? context.TraceIdentifier;
+                _logger.LogError(ex, "Unhandled exception {RequestId} at {Path}", requestId, context.Request.Path);
 
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                // Build a rich model once
+                var model = new ErrorViewModel
+                {
+                    RequestId = requestId,
+                    ErrorMessage = ex.Message,
+                    Path = context.Request.Path,
+                    QueryString = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : null,
+                    Endpoint = context.GetEndpoint()?.DisplayName,
+                    RouteValues = context.Request.RouteValues.ToDictionary(k => k.Key, v => v.Value?.ToString()),
+                    ExceptionType = ex.GetType().FullName,
+                    Source = ex.Source,
+                    TargetSite = ex.TargetSite?.ToString(),
+                    StackTrace = ex.StackTrace,
+                    User = context.User?.Identity?.IsAuthenticated == true ? context.User.Identity!.Name : null,
+                    Utc = DateTimeOffset.UtcNow
+                };
 
                 if (IsApiRequest(context))
                 {
-                    context.Response.ContentType = "application/json";
-
-                    var response = new Response<Nothing>
+                    // ---- API response (JSON) ----
+                    if (!context.Response.HasStarted)
                     {
-                        StatusCode = context.Response.StatusCode,
-                        Status = false,
-                        Message = _env.IsDevelopment() ? ex.Message : "An unexpected error occurred."
-                    };
+                        context.Response.Clear();
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        context.Response.ContentType = "application/json";
 
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                    };
+                        var payload = new
+                        {
+                            requestId,
+                            title = "An unexpected error occurred.",
+                            status = 500,
+                            // expose details only in Development
+                            detail = _env.IsDevelopment() ? ex.Message : null,
+                            exceptionType = _env.IsDevelopment() ? ex.GetType().FullName : null,
+                            stackTrace = _env.IsDevelopment() ? ex.StackTrace : null,
+                            path = model.Path.ToString()
+                        };
 
-                    var json = JsonSerializer.Serialize(response, options);
-                    await context.Response.WriteAsync(json);
+                        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+                        {
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                            WriteIndented = _env.IsDevelopment()
+                        });
+
+                        await context.Response.WriteAsync(json);
+                    }
+                    return;
                 }
                 else
                 {
-                    var errorMessage = _env.IsDevelopment() ? WebUtility.UrlEncode(ex.Message) : null;
-                    var redirectUrl = string.IsNullOrEmpty(errorMessage)
-                        ? "/Home/Error"
-                        : $"/Home/Error?message={errorMessage}";
+                    // ---- MVC response (Razor view) ----
+                    if (!context.Response.HasStarted)
+                    {
+                        context.Response.Clear();
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                    context.Response.Redirect(redirectUrl);
+                        // Build a full ActionContext: HttpContext + RouteData + ActionDescriptor
+                        var routeData = context.GetRouteData() ?? new RouteData();
+                        var actionContext = new ActionContext(
+                            httpContext: context,
+                            routeData: routeData,
+                            actionDescriptor: new ActionDescriptor()
+                        );
+
+                        var viewResult = new ViewResult
+                        {
+                            ViewName = "~/Views/Shared/Error.cshtml",
+                            ViewData = new ViewDataDictionary(
+                                new EmptyModelMetadataProvider(),
+                                new ModelStateDictionary())
+                            { Model = model }
+                        };
+
+                        var executor = context.RequestServices.GetRequiredService<IActionResultExecutor<ViewResult>>();
+                        await executor.ExecuteAsync(actionContext, viewResult);
+                    }
+                    return;
                 }
             }
         }
 
-        private bool IsApiRequest(HttpContext context)
+        private static bool IsApiRequest(HttpContext context)
         {
-            var path = context.Request.Path.ToString();
+            var path = context.Request.Path.Value ?? string.Empty;
             var accept = context.Request.Headers["Accept"].ToString();
 
             return path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
